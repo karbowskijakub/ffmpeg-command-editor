@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -22,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ConsoleProps } from "@/interfaces/Console";
 
 const formSchema = z.object({
   fromCut: z.number({
@@ -40,7 +40,13 @@ const formSchema = z.object({
       required_error: "Please select or enter a bitrate.",
     })
     .min(1, { message: "Bitrate must be greater than 0." }),
-  bitRate: z
+  bitRateAudio: z
+    .number({
+      invalid_type_error: "Bitrate must be a number.",
+      required_error: "Please select or enter a bitrate.",
+    })
+    .min(1, { message: "Bitrate must be greater than 0." }),
+  bitRateVideo: z
     .number({
       invalid_type_error: "Bitrate must be a number.",
       required_error: "Please select or enter a bitrate.",
@@ -74,7 +80,8 @@ const formSchema = z.object({
     message: "File path 2 is required.",
   }),
 
-  isCustomBitRate: z.boolean().default(false).optional(),
+  isCustomBitRateAudio: z.boolean().default(false).optional(),
+  isCustomBitRateVideo: z.boolean().default(false).optional(),
   isCustomFrameRate: z.boolean().default(false).optional(),
   isCustomAudioCodec: z.boolean().default(false).optional(),
   isCustomVideoCodec: z.boolean().default(false).optional(),
@@ -82,12 +89,16 @@ const formSchema = z.object({
   isCutAudioAndVideo: z.boolean().default(false).optional(),
 });
 
-const Console = () => {
-  const [showCustomBitRate, setShowCustomBitRate] = useState(false);
+const Console = ({ setWatchedFields }: ConsoleProps) => {
+  const [showCustomBitRateAudio, setShowCustomBitRateAudio] = useState(false);
+  const [showCustomBitRateVideo, setShowCustomBitRateVideo] = useState(false);
   const [showCustomFrameRate, setShowCustomFrameRate] = useState(false);
   const [showCustomAudioCodec, setShowCustomAudioCodec] = useState(false);
   const [showCustomVideoCodec, setShowCustomVideoCodec] = useState(false);
-  const [LastChoosedCustomBitRate, setLastChoosedCustomBitRate] = useState(0);
+  const [LastChoosedCustomBitRateAudio, setLastChoosedCustomBitRateAudio] =
+    useState(0);
+  const [LastChoosedCustomBitRateVideo, setLastChoosedCustomBitRateVideo] =
+    useState(0);
   const [LastChoosedCustomFrameRate, setLastChoosedCustomFrameRate] =
     useState(0);
   const [LastChoosedCustomAudioCodec, setLastChoosedCustomAudioCodec] =
@@ -102,7 +113,8 @@ const Console = () => {
       FilePathOutput: "",
       InputFileFormat: "",
       OutputFileFormat: "",
-      isCustomBitRate: false,
+      isCustomBitRateAudio: false,
+      isCustomBitRateVideo: false,
       isCustomFrameRate: false,
       isCustomAudioCodec: false,
       isTranscodingConversion: false,
@@ -115,29 +127,34 @@ const Console = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-
+  const currentValues = form.getValues();
   const setFormDefault = () => {
     form.reset({
-      FilePathInput: "",
-      FilePathOutput: "",
-      InputFileFormat: "",
-      OutputFileFormat: "",
-      filePath2: "",
-      isCustomBitRate: false,
+      FilePathInput: currentValues.FilePathInput,
+      FilePathOutput: currentValues.FilePathOutput,
+      InputFileFormat: currentValues.InputFileFormat,
+      OutputFileFormat: currentValues.OutputFileFormat,
+      isCustomBitRateAudio: false,
+      isCustomBitRateVideo: false,
       isCustomFrameRate: false,
       isCustomAudioCodec: false,
       isTranscodingConversion: false,
       isCutAudioAndVideo: false,
     });
-    setShowCustomBitRate(false);
+    setShowCustomBitRateAudio(false);
+    setShowCustomBitRateVideo(false);
     setShowCustomFrameRate(false);
     setShowCustomAudioCodec(false);
     setShowCustomVideoCodec(false);
     setLastChoosedCustomFrameRate(0);
   };
 
+  useEffect(() => {
+    setWatchedFields(watchAllFields);
+  }, [watchAllFields, setWatchedFields]);
+
   return (
-    <div className="flex w-full h-full justify-center">
+    <div className="flex w-full h-3/5 justify-center">
       <div className="mt-10 mx-10 w-5/6 max-h-3/5 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="p-5 flex">
@@ -246,7 +263,7 @@ const Console = () => {
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="default">
-                              Without audio codec{" "}
+                              Without audio codec
                             </SelectItem>
                             <SelectItem value="mp3">MP3</SelectItem>
                             <SelectItem value="aac">AAC</SelectItem>
@@ -265,7 +282,7 @@ const Console = () => {
                     control={form.control}
                     name="isCustomAudioCodec"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5 mx-2">
                         <FormLabel className="mr-3">
                           Custom Audio Codec
                         </FormLabel>
@@ -313,7 +330,7 @@ const Console = () => {
                     control={form.control}
                     name="videoCodec"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5  mx-2">
                         <FormLabel>Choose Video Codec</FormLabel>
                         <Select
                           onValueChange={(value) => {
@@ -333,11 +350,11 @@ const Console = () => {
                             <SelectItem value="default">
                               Without video codec
                             </SelectItem>
-                            <SelectItem value="h264">H.264</SelectItem>
-                            <SelectItem value="h265">H.265</SelectItem>
-                            <SelectItem value="vp8">VP8</SelectItem>
-                            <SelectItem value="vp9">VP9</SelectItem>
-                            <SelectItem value="av1">AV1</SelectItem>
+                            <SelectItem value="libx264">H.264</SelectItem>
+                            <SelectItem value="libx265">H.265</SelectItem>
+                            <SelectItem value="libvpx">VP8</SelectItem>
+                            <SelectItem value="libvpx-vp9">VP9</SelectItem>
+                            <SelectItem value="libaom-av1">AV1</SelectItem>
                             <SelectItem value="mpeg4">MPEG-4</SelectItem>
                           </SelectContent>
                         </Select>
@@ -350,7 +367,7 @@ const Console = () => {
                     control={form.control}
                     name="isCustomVideoCodec"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5  mx-2">
                         <FormLabel className="mr-3">
                           Custom Video Codec
                         </FormLabel>
@@ -395,18 +412,18 @@ const Console = () => {
                   )}
                   <FormField
                     control={form.control}
-                    name="bitRate"
+                    name="bitRateAudio"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
-                        <FormLabel>Choose Bitrate</FormLabel>
+                      <FormItem className="mt-5  mx-2">
+                        <FormLabel>Choose Bitrate Audio</FormLabel>
                         <Select
                           onValueChange={(value) => {
                             const numericValue = Number(value);
                             field.onChange(numericValue);
-                            setLastChoosedCustomBitRate(numericValue);
+                            setLastChoosedCustomBitRateAudio(numericValue);
                           }}
                           defaultValue={field.value?.toString()}
-                          disabled={showCustomBitRate}
+                          disabled={showCustomBitRateAudio}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -431,10 +448,12 @@ const Console = () => {
 
                   <FormField
                     control={form.control}
-                    name="isCustomBitRate"
+                    name="isCustomBitRateAudio"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
-                        <FormLabel className="mr-3">Custom bitrate</FormLabel>
+                      <FormItem className="mt-5  mx-2">
+                        <FormLabel className="mr-3">
+                          Custom bitrate Audio
+                        </FormLabel>
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -442,13 +461,13 @@ const Console = () => {
                               const isChecked = checked === true;
                               if (!isChecked) {
                                 form.setValue(
-                                  "bitRate",
-                                  LastChoosedCustomBitRate
+                                  "bitRateAudio",
+                                  LastChoosedCustomBitRateAudio
                                 );
                               }
 
                               field.onChange(isChecked);
-                              setShowCustomBitRate(isChecked);
+                              setShowCustomBitRateAudio(isChecked);
                             }}
                           />
                         </FormControl>
@@ -456,13 +475,15 @@ const Console = () => {
                     )}
                   />
 
-                  {showCustomBitRate && (
+                  {showCustomBitRateAudio && (
                     <FormField
                       control={form.control}
-                      name="bitRate"
+                      name="bitRateAudio"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter Custom Bit Rate (kbps)</FormLabel>
+                        <FormItem className=" mx-2">
+                          <FormLabel>
+                            Enter Custom Bit Rate Audio (kbps)
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -477,11 +498,101 @@ const Console = () => {
                       )}
                     />
                   )}
+
+                  <FormField
+                    control={form.control}
+                    name="bitRateVideo"
+                    render={({ field }) => (
+                      <FormItem className="mt-5  mx-2">
+                        <FormLabel>Choose Bitrate Video</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            const numericValue = Number(value);
+                            field.onChange(numericValue);
+                            setLastChoosedCustomBitRateVideo(numericValue);
+                          }}
+                          defaultValue={field.value?.toString()}
+                          disabled={showCustomBitRateVideo}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a bitrate you want" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="128">128 kbps</SelectItem>
+                            <SelectItem value="192">192 kbps</SelectItem>
+                            <SelectItem value="256">256 kbps</SelectItem>
+                            <SelectItem value="320">320 kbps</SelectItem>
+                            <SelectItem value="1000">1 Mbps</SelectItem>
+                            <SelectItem value="2500">2.5 Mbps</SelectItem>
+                            <SelectItem value="5000">5 Mbps</SelectItem>
+                            <SelectItem value="10000">10 Mbps</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isCustomBitRateVideo"
+                    render={({ field }) => (
+                      <FormItem className="mt-5  mx-2">
+                        <FormLabel className="mr-3">
+                          Custom bitrate Video
+                        </FormLabel>
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                              const isChecked = checked === true;
+                              if (!isChecked) {
+                                form.setValue(
+                                  "bitRateVideo",
+                                  LastChoosedCustomBitRateVideo
+                                );
+                              }
+
+                              field.onChange(isChecked);
+                              setShowCustomBitRateVideo(isChecked);
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {showCustomBitRateVideo && (
+                    <FormField
+                      control={form.control}
+                      name="bitRateVideo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Enter Custom Bit Rate Video (kbps)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
                   <FormField
                     control={form.control}
                     name="frameRate"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5 mx-2">
                         <FormLabel>Choose Frame Rate</FormLabel>
                         <Select
                           onValueChange={(value) => {
@@ -516,7 +627,7 @@ const Console = () => {
                     control={form.control}
                     name="isCustomFrameRate"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5 mx-2">
                         <FormLabel className="mr-3">
                           Custom frame rate
                         </FormLabel>
@@ -566,7 +677,7 @@ const Console = () => {
                     control={form.control}
                     name="resolution"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5 mx-2">
                         <FormLabel>Choose Resolution</FormLabel>
                         <Select
                           onValueChange={field.onChange}
@@ -612,7 +723,7 @@ const Console = () => {
                     control={form.control}
                     name="duration"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5 mx-2">
                         <FormLabel>Type duration</FormLabel>
                         <FormControl>
                           <Input {...field} />
@@ -636,7 +747,7 @@ const Console = () => {
                 control={form.control}
                 name="isCutAudioAndVideo"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4  mx-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -663,7 +774,7 @@ const Console = () => {
                     control={form.control}
                     name="fromCut"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5  mx-2">
                         <FormLabel>
                           Enter the moment from which you want to cut
                         </FormLabel>
@@ -683,7 +794,7 @@ const Console = () => {
                     control={form.control}
                     name="toCut"
                     render={({ field }) => (
-                      <FormItem className="mt-5">
+                      <FormItem className="mt-5  mx-2">
                         <FormLabel>
                           Enter the moment to which you want to cut
                         </FormLabel>
@@ -702,7 +813,6 @@ const Console = () => {
                       </FormItem>
                     )}
                   />
-                  
                 </div>
               )}
             </div>
