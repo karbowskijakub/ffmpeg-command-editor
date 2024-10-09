@@ -15,7 +15,11 @@ using ffmpeg_conversion_helper.WebApi.Requests;
 using ffmpeg_conversion_helper.Application.Interfaces;
 using ffmpeg_conversion_helper.Application.ServicesData;
 using ffmpeg_conversion_helper.Infrastructure.Resources;
+using System.Linq;
 namespace Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 public static class IdentityApiEndpointRouteBuilderExtensions
 {
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
@@ -72,6 +76,17 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             await SendConfirmationEmailAsync(user, userManager, context, email);
             return TypedResults.Ok();
         });
+
+        routeGroup.MapGet("/checkIsLoggedIn", async Task<IResult> (HttpContext httpContext) =>
+        {
+            if (httpContext.User.Identity?.IsAuthenticated == true)
+            {
+                return Results.Ok();
+            }
+            return Results.Unauthorized();
+        });
+
+
 
         routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>>
             ([FromBody] LoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
@@ -216,7 +231,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return TypedResults.Unauthorized();
             }
 
-            return Results.Redirect("http://localhost:3000/confirmationSuccess");
+            return Results.Redirect("http://localhost:3000/confirmationEmail");
         })
         .Add(endpointBuilder =>
         {

@@ -20,7 +20,7 @@ import Hero from "../components/Hero";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import { useNavigate } from "react-router-dom";
 const passwordValidation = z
   .string()
   .min(6, { message: "Password must be at least 6 characters long." })
@@ -90,6 +90,7 @@ const Register = () => {
         toast.success(
           "Registration successful! A confirmation email has been sent to activate your account."
         );
+        navigate("/login");
       } catch (error) {
         console.error("Error during additional registration steps:", error);
       }
@@ -113,7 +114,8 @@ const Register = () => {
       toast.error("An error occurred during email validation.");
     }
   };
-
+  const navigate = useNavigate();
+  
   return (
     <section className="h-screen">
       <div className="flex h-full items-center justify-center">

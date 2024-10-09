@@ -1,7 +1,14 @@
 import { CircleX, Pencil, FileDown } from "lucide-react";
 import { Button } from "./ui/button";
+import { postLogout } from "@/api/api";
+import { useNavigate } from "react-router-dom";
 
 const SavedCommands = () => {
+  const handleLoginClick = () => {
+    postLogout();
+    navigate("/login");
+  };
+  const navigate = useNavigate();
   return (
     <div className="w-full h-1/3 flex flex-row">
       <div className="w-[95%] h-full bg-customGrey rounded p-5 mt-10">
@@ -25,10 +32,12 @@ const SavedCommands = () => {
           Hello, Jakub
         </h1>
         <div className="flex justify-center items-center flex-col">
-          <button >
+          <button>
             <FileDown className="mb-4 text-primary-foreground" />
           </button>
-          <Button variant="secondary">Logout</Button>
+          <Button variant="secondary" onClick={handleLoginClick}>
+            Logout
+          </Button>
         </div>
       </div>
     </div>
