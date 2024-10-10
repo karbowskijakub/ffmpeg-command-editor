@@ -8,6 +8,7 @@ using ffmpeg_conversion_helper.Application.Services;
 using ffmpeg_conversion_helper.Application.ServicesData;
 using Microsoft.AspNetCore.Identity;
 using ffmpeg_conversion_helper.Application.Repository;
+using ffmpeg_conversion_helper.Infrastructure.Repositories;
 
 public class Program
 {
@@ -27,6 +28,7 @@ public class Program
         builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppDbContext>().AddApiEndpoints();
         builder.Services.AddAuthorization();
         builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
+        builder.Services.AddScoped<ICommandPostRepository, CommandPostRepository>();
         builder.Services.AddTransient<IEmailService, EmailService>();
         builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
         builder.Services.AddCors(options =>

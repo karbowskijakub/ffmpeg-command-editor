@@ -15,7 +15,7 @@ namespace ffmpeg_conversion_helper.Infrastructure.Context
         {
         }
         public DbSet<User> Users => Set<User>();
-
+        public DbSet<CommandPost> CommandPosts { get; set; }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return await base.SaveChangesAsync(cancellationToken);
