@@ -214,10 +214,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                 )}
               />
               <div className="w-full flex justify-center items-center">
-               <Button type="button" className="mt-5" onClick={setFormDefault} >
-            Reset all
-          </Button>
-          </div>
+                <Button type="button" className="mt-5" onClick={setFormDefault}>
+                  Reset all
+                </Button>
+              </div>
             </div>
 
             <div className="text-secondary-foreground max-h-[600px] w-2/4 ">
@@ -255,7 +255,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Audio Codec</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const stringValue = value;
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
                             field.onChange(stringValue);
                             setLastChoosedCustomAudioCodec(stringValue);
                           }}
@@ -340,7 +343,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Video Codec</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const stringValue = value;
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
                             field.onChange(stringValue);
                             setLastChoosedCustomVideoCodec(stringValue);
                           }}
@@ -424,7 +430,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Bitrate Audio</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const numericValue = Number(value);
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
+                            const numericValue = Number(stringValue);
                             field.onChange(numericValue);
                             setLastChoosedCustomBitRateAudio(numericValue);
                           }}
@@ -437,6 +447,9 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
+                            <SelectItem value="default">
+                              Default value
+                            </SelectItem>
                             <SelectItem value="128">128 kbps</SelectItem>
                             <SelectItem value="192">192 kbps</SelectItem>
                             <SelectItem value="256">256 kbps</SelectItem>
@@ -513,7 +526,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Bitrate Video</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const numericValue = Number(value);
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
+                            const numericValue = Number(stringValue);
                             field.onChange(numericValue);
                             setLastChoosedCustomBitRateVideo(numericValue);
                           }}
@@ -526,6 +543,9 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
+                            <SelectItem value="default">
+                              Default value
+                            </SelectItem>
                             <SelectItem value="128">128 kbps</SelectItem>
                             <SelectItem value="192">192 kbps</SelectItem>
                             <SelectItem value="256">256 kbps</SelectItem>

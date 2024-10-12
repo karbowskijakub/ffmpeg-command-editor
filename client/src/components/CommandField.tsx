@@ -48,10 +48,10 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if the command name is empty
+
     if (!commandName.trim()) {
-      toast.error("Command name cannot be empty."); // Show error toast
-      return; // Prevent submission
+      toast.error("Command name cannot be empty."); 
+      return; 
     }
 
     try {
@@ -64,6 +64,17 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(ffmpegCommand)
+      .then(() => {
+        toast.success("Command copied to clipboard!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy command.");
+        console.error("Copy error:", err);
+      });
+  };
+
   return (
     <>
       <div className="w-full h-16 bg-primary rounded p-5 flex justify-between items-center">
@@ -71,7 +82,7 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
           {ffmpegCommand}
         </p>
         <div>
-          <Button className="mr-3" variant="secondary">
+          <Button className="mr-3" variant="secondary" onClick={handleCopy} >
             Copy
           </Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
