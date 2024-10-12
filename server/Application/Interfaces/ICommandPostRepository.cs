@@ -14,6 +14,7 @@ namespace ffmpeg_conversion_helper.Application.Interfaces
         Task<CommandPost> GetByIdAsync(Guid id);
         Task<IEnumerable<CommandPost>> GetAllAsync();
         Task<CommandPost> UpdateAsync(CommandPost commandPost);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id, string UserId);
+        Task<IEnumerable<CommandPost>> GetAllByUserIdAsync(string userId);
     }
 }

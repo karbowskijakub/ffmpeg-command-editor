@@ -52,14 +52,25 @@ namespace ffmpeg_conversion_helper.Infrastructure.Repositories
             return commandPost;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<IEnumerable<CommandPost>> GetAllByUserIdAsync(string userId)
         {
-            var commandPost = await _context.CommandPosts.FindAsync(id);
+            return await _context.CommandPosts
+                .Where(commandPost => commandPost.UserId == userId) 
+                .ToListAsync();
+        }
+
+        public async Task<bool> DeleteAsync(Guid id, string userId)
+        {
+
+            var commandPost = await _context.CommandPosts
+                .FirstOrDefaultAsync(cp => cp.Id == id && cp.UserId == userId);
             if (commandPost == null)
                 return false;
 
             _context.CommandPosts.Remove(commandPost);
+
             await _context.SaveChangesAsync();
+
             return true;
         }
     }

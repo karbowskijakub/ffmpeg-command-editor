@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ConsoleProps } from "@/interfaces/Console";
+import { Button } from "./ui/button";
 
 const formSchema = z.object({
   fromCut: z.number({
@@ -212,6 +213,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                   </FormItem>
                 )}
               />
+              <div className="w-full flex justify-center items-center">
+               <Button type="button" className="mt-5" onClick={setFormDefault} >
+            Reset all
+          </Button>
+          </div>
             </div>
 
             <div className="text-secondary-foreground max-h-[600px] w-2/4 ">

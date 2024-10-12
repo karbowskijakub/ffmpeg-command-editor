@@ -38,6 +38,21 @@ namespace ffmpeg_conversion_helper.WebApi.Controllers
             return CreatedAtAction(nameof(GetCommandPost), new { id = createdPost.Id }, createdPost);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CommandPost>>> GetAllCommandPostsForUser()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User not found or unauthorized.");
+            }
+
+            var commandPosts = await _repository.GetAllByUserIdAsync(userId);
+
+            return Ok(commandPosts);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CommandPost>> GetCommandPost(Guid id)
         {
@@ -65,7 +80,8 @@ namespace ffmpeg_conversion_helper.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCommandPost(Guid id)
         {
-            var success = await _repository.DeleteAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var success = await _repository.DeleteAsync(id, userId);
             if (!success)
             {
                 return NotFound();

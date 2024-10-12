@@ -1,6 +1,7 @@
 import axios from "axios";
 import url from "./server-connect";
 
+
 export const checkEmail = async (email: string) => {
     try {
       await axios.post(`${url}/checkEmailExists`, { email });
@@ -10,19 +11,78 @@ export const checkEmail = async (email: string) => {
     }
   };
 
-  export const checkIsLoggedIn = (): boolean => {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith('.AspNetCore.Identity.Application=')) {
-        const value = cookie.split('=')[1]; 
-        if (value) {
-          return true;
-        }
-      }
-    }
-    return false;
+  export const postCommand = async (data: {
+    postName: string;
+    postContent: string;
+  }) => {
+    const response = await axios.post(`${url}/CommandPost`, data,{
+      params: {
+        useCookies: true,
+      },
+      withCredentials: true,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
   };
+
+
+  export const deleteCommand = async (id) => {
+    try {
+      const response = await axios.delete(`${url}/CommandPost/${id}`, {
+        params: {
+          useCookies: true,
+        },
+        withCredentials: true,
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error)
+    }
+  };
+
+  export const updateCommand = async (data: {
+    id: string;
+    userId: string;
+    postName: string;
+    postContent: string;
+  }) => {
+    const { id } = data; 
+    const response = await axios.put(`${url}/CommandPost/${id}`, data, {
+      params: {
+        useCookies: true,
+      },
+      withCredentials: true,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  };
+
+
+  export const getAllCommands = async () => {
+    const response = await axios.get(`${url}/CommandPost`, {
+      params: {
+        useCookies: true,
+      },
+      withCredentials: true,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; 
+  };
+
+
 
   export const postRegister = async (data: {
     email: string;

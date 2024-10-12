@@ -1,4 +1,4 @@
-// src/App.tsx
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Main from "./pages/Main";
@@ -10,7 +10,7 @@ import { AuthProvider } from "./hooks/AuthContext";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const App = () => {  
     return (
         <QueryClientProvider client={queryClient}>
             <AuthProvider> 
@@ -36,4 +36,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default App;  

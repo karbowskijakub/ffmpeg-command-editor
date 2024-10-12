@@ -11,4 +11,5 @@ namespace ffmpeg_commander.Application.DTO
         public string PostName { get; set; }
         public string PostContent { get; set; }
     }
+
 }

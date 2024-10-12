@@ -79,11 +79,10 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
         routeGroup.MapGet("/checkIsLoggedIn", async Task<IResult> (HttpContext httpContext) =>
         {
-            if (httpContext.User.Identity?.IsAuthenticated == true)
-            {
-                return Results.Ok();
-            }
-            return Results.Unauthorized();
+
+            bool isAuthenticated = httpContext.User.Identity?.IsAuthenticated == true;
+
+            return Results.Json(new { success = isAuthenticated });
         });
 
 
