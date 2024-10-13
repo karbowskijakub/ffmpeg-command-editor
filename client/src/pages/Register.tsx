@@ -120,7 +120,7 @@ const Register = () => {
     <section className="h-screen">
       <div className="flex h-full items-center justify-center">
         <Hero />
-        <div className="flex h-full w-1/2 flex-col items-center justify-center">
+        <div className="flex h-full w-3/4 lg:w-1/2 flex-col items-center justify-center">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}

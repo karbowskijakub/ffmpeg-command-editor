@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { updateCommand, deleteCommand } from "@/api/api"; 
 import { toast } from "react-toastify";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const PostRowSavedCommand = ({ command, refetch }) => {
   const [commandName, setCommandName] = useState(command.postName); 
@@ -53,16 +54,18 @@ const PostRowSavedCommand = ({ command, refetch }) => {
   };
 
   return (
-    <div key={command.id} className="bg-secondary w-full h-10 flex justify-between items-center mb-2">
-      <p className="ml-4 ">
+    <div key={command.id} className="bg-secondary w-full h-24 lg:h-10 flex justify-between items-center mb-2 ">
+      <ScrollArea className="h-16 lg:h-8">
+      <p className="ml-4 p-2 ">
         <span className="font-bold mr-3">{command.postName}:</span>
         <span>{command.postContent}</span>
       </p>
-      <div>
+      </ScrollArea>
+      <div className="p-2 min-w-24">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <button onClick={() => setDialogOpen(true)}> 
-              <Pencil className="mr-3" />
+              <Pencil className="mr-2 lg:mr-3" />
             </button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -105,7 +108,7 @@ const PostRowSavedCommand = ({ command, refetch }) => {
         <Dialog open={dialogOpenDelete} onOpenChange={setDialogOpenDelete}>
           <DialogTrigger asChild>
             <button onClick={() => setDialogOpenDelete(true)}> 
-              <CircleX className="mr-3" />
+              <CircleX className="lg:mr-3" />
             </button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">

@@ -6,6 +6,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     checkAuth: () => Promise<void>;
     loading: boolean;  
+    setIsAuthenticated: (value: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,21 +20,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             const response = await axios.get(`${url}/checkIsLoggedIn`, { withCredentials: true });
             console.log("Auth response:", response.data);
-            setIsAuthenticated(response.data.success); 
+            const isLoggedIn = response.data.success; 
+            setIsAuthenticated(isLoggedIn); 
+            sessionStorage.setItem("isAuthenticated", response.data.success.toString()); 
         } catch (error) {
             console.error("Error checking authentication:", error);
             setIsAuthenticated(false);
+            sessionStorage.removeItem("isAuthenticated");
         } finally {
             setLoading(false); 
         }
     };
 
     useEffect(() => {
+        const storedAuth = localStorage.getItem("isAuthenticated");
+        if (storedAuth) {
+            setIsAuthenticated(JSON.parse(storedAuth));
+        }
         checkAuth();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, checkAuth, loading }}>
+        <AuthContext.Provider value={{ isAuthenticated, checkAuth, loading, setIsAuthenticated }}>
             {!loading && children}
         </AuthContext.Provider>
     );

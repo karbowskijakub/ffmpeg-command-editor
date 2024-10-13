@@ -1,6 +1,19 @@
 import axios from "axios";
 import url from "./server-connect";
 
+export const resetPassword = async (data: {
+  email: string;
+  resetCode: string;
+  newPassword: string;
+}) => {
+  const response = await axios.post(`${url}/resetPassword`, {
+    email: data.email,
+    resetCode: data.resetCode,
+    newPassword: data.newPassword,
+  });
+
+  return response.data;
+};
 
 export const checkEmail = async (email: string) => {
     try {
@@ -26,6 +39,38 @@ export const checkEmail = async (email: string) => {
       },
     });
     return response.data;
+  };
+
+  export const downloadPosts = async () => {
+    try {
+      const response = await axios.get(`${url}/CommandPost/download`, {
+        params: {
+          useCookies: true,
+        },
+        withCredentials: true,
+        responseType: 'blob', 
+        headers: {
+          accept: "application/json",
+        },
+      });
+
+      const blob = new Blob([response.data], { type: 'text/plain' });
+  
+      const downloadUrl = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'commands.txt'; 
+      document.body.appendChild(a);
+      a.click();
+  
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+      
+    } catch (error) {
+      console.error('Error downloading command posts:', error);
+      alert('Failed to download the file. Please try again.');
+    }
   };
 
 

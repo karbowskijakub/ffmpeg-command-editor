@@ -12,10 +12,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { postCommand } from "@/api/api";
+import { getAllCommands, postCommand } from "@/api/api";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 const CommandField = ({ watchedFields }: CommandFieldProps) => {
+
+  const {  refetch } = useQuery({
+    queryKey: ["commands"],
+    queryFn: getAllCommands,
+  });
+
   const {
     FilePathInput,
     FilePathOutput,
@@ -28,6 +35,8 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
     bitRateVideo,
     resolution,
     duration,
+    fromCut,
+    toCut
   } = watchedFields;
 
   const ffmpegCommand = `ffmpeg ${
@@ -35,11 +44,13 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   } -i ${FilePathInput} ${OutputFileFormat ? `-f ${OutputFileFormat}` : ""} ${
     videoCodec ? `-vcodec ${videoCodec}` : ""
   } ${audioCodec ? `-acodec ${audioCodec}` : ""} 
-  ${bitRateVideo ? `-b:v ${bitRateVideo}` : ""}
-    ${bitRateAudio ? `-b:a ${bitRateAudio}` : ""}
- ${duration ? `-t ${duration}` : ""}
-  ${frameRate ? `-r ${frameRate}` : ""}
-  ${resolution ? `-s ${resolution}` : ""}
+  ${bitRateVideo ? `-b:v ${bitRateVideo}` : ""} 
+  ${bitRateAudio ? `-b:a ${bitRateAudio}` : ""} 
+  ${duration ? `-t ${duration}` : ""} 
+  ${frameRate ? `-r ${frameRate}` : ""} 
+  ${resolution ? `-s ${resolution}` : ""} 
+  ${fromCut ? `-ss ${fromCut}` : ""} 
+  ${toCut ? `-to ${toCut} -c copy` : ""} 
   ${FilePathOutput}`;
 
   const [commandName, setCommandName] = useState("");
@@ -58,6 +69,7 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
       await postCommand({ postName: commandName, postContent: ffmpegCommand });
       toast.success("Command saved successfully!");
       setDialogOpen(false);
+      refetch();
     } catch (error) {
       toast.error("Failed to save command.");
       console.error("Error saving command:", error);
@@ -77,14 +89,15 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
 
   return (
     <>
-      <div className="w-full h-16 bg-primary rounded p-5 flex justify-between items-center">
+      <div className="w-full h-full lg:h-24 bg-primary rounded p-5 flex justify-between items-center flex-col lg:flex-row">
         <p className="text-primary-foreground font-bold text-xl">
           {ffmpegCommand}
         </p>
-        <div>
+        <div className="min-w-64 mt-4 lg:mt-0 flex justify-center lg:justify-end">
           <Button className="mr-3" variant="secondary" onClick={handleCopy} >
             Copy
           </Button>
+
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="secondary">Generate</Button>
@@ -96,8 +109,8 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
                   Save your command to the database.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit}> 
-                <div className="w-full">
+              <form onSubmit={handleSubmit} > 
+                <div className="w-full ">
                   <div className="flex flex-col">
                     <Label htmlFor="name" className="mb-4">
                       Type the name of the command
@@ -120,6 +133,7 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
               </form>
             </DialogContent>
           </Dialog>
+        
         </div>
       </div>
     </>

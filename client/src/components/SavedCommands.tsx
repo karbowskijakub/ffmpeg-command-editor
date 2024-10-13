@@ -1,12 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { postLogout, getAllCommands } from "@/api/api";
+import { postLogout, getAllCommands, downloadPosts } from "@/api/api";
 import { useNavigate } from "react-router-dom";
-import PostRowSavedCommand from "./PostRowSavedCommand"; 
+import PostRowSavedCommand from "./PostRowSavedCommand";
 import { CommandPost } from "@/interfaces/CommandPost";
 import { FileDown } from "lucide-react";
 import { Button } from "./ui/button";
+import { toast } from "react-toastify";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 const SavedCommands = () => {
   const navigate = useNavigate();
+
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["commands"],
@@ -17,7 +21,15 @@ const SavedCommands = () => {
     postLogout();
     navigate("/login");
   };
-
+  const handleDownloadClick = async () => {
+    try {
+      await downloadPosts();
+      toast.success("Commands downloaded successfully!");
+    } catch (error) {
+      toast.error("Error downloading commands");
+      console.error("Error downloading commands:", error);
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -28,22 +40,26 @@ const SavedCommands = () => {
   }
 
   return (
-    <div className="w-full h-1/3 flex flex-row">
-      <div className="w-[95%] h-full bg-customGrey rounded p-5 mt-10">
-        {data.map((command:CommandPost) => (
+    <div className="w-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-[85%] h-[350px]   lg:h-full bg-customGrey rounded  lg:mt-10">
+        <ScrollArea className="h-[350px]">
+          <div className="p-5">
+        {data.map((command: CommandPost) => (
           <PostRowSavedCommand
-            key={command.id} 
+            key={command.id}
             command={command}
             refetch={refetch}
           />
         ))}
+        </div>
+            </ScrollArea>
       </div>
-      <div className="w-[5%] h-full bg-customGrey rounded p-5 mt-10 ml-3 flex flex-col justify-between items-center">
+      <div className="w-full lg:w-[15%] lg:min-h-[350px]   h-full bg-customGrey rounded p-5 mt-10 lg:ml-3 flex flex-col justify-between items-center">
         <h1 className="font-bold text-primary-foreground text-xl text-center">
           Hello, Jakub
         </h1>
         <div className="flex justify-center items-center flex-col">
-          <button>
+          <button onClick={handleDownloadClick}>
             <FileDown className="mb-4 text-primary-foreground" />
           </button>
           <Button variant="secondary" onClick={handleLoginClick}>

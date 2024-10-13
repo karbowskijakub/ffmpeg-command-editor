@@ -37,7 +37,34 @@ namespace ffmpeg_conversion_helper.WebApi.Controllers
 
             return CreatedAtAction(nameof(GetCommandPost), new { id = createdPost.Id }, createdPost);
         }
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadAllCommandPostsForUser()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User not found or unauthorized.");
+            }
+
+            var commandPosts = await _repository.GetAllByUserIdAsync(userId);
+
+            if (commandPosts == null || !commandPosts.Any())
+            {
+                return NotFound("No commands found for the user.");
+            }
+
+            var fileContent = string.Join(Environment.NewLine,
+                                          commandPosts.Select(cp =>
+                                              $"{cp.PostName}: {cp.PostContent.Replace("\r\n", " ")
+                                                                              .Replace("\n", " ")
+                                                                              .Replace("\r", " ")
+                                                                              .Replace("\t", " ") 
+                                                                              .Replace("  ", " ") 
+                                                                              .Trim()}"));        
+
+            return File(new System.Text.UTF8Encoding().GetBytes(fileContent), "text/plain", "commands.txt");
+        }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CommandPost>>> GetAllCommandPostsForUser()
         {

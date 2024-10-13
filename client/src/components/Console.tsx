@@ -155,11 +155,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
   }, [watchAllFields, setWatchedFields]);
 
   return (
-    <div className="flex w-full h-3/5 justify-center">
-      <div className="mt-10 mx-10 w-5/6 max-h-3/5 ">
+    <div className="flex w-full h-3/5 justify-center ">
+      <div className="mt-10 mx-10 w-full h-full lg:w-5/6 lg:max-h-3/5 ">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-5 flex">
-            <div className="bg-secondary text-secondary-foreground min-h-[600px] w-1/4 p-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:p-5 flex flex-col lg:flex-row">
+            <div className="bg-secondary text-secondary-foreground lg:min-h-[600px] w-full lg:w-1/4 p-4">
               <FormField
                 control={form.control}
                 name="FilePathInput"
@@ -220,7 +220,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               </div>
             </div>
 
-            <div className="text-secondary-foreground max-h-[600px] w-2/4 ">
+            <div className="text-secondary-foreground max-h-full lg:max-h-[600px] w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isTranscodingConversion"
@@ -768,12 +768,12 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               )}
             </div>
 
-            <div className="text-secondary-foreground h-full w-2/4 ">
+            <div className="text-secondary-foreground h-full w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isCutAudioAndVideo"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4  mx-2">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4  lg:mx-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}

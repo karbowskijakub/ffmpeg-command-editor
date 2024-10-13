@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import ResetPasswordPopup from "@/components/ResetPopup";
+import { useAuth } from "@/hooks/AuthContext";
+
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please provide a valid email address." }),
@@ -29,7 +31,7 @@ const formSchema = z.object({
 const Login = () => {
   const [isResetPasswordPopupVisible, setResetPasswordPopupVisible] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
-
+  const { setIsAuthenticated } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,7 +46,9 @@ const Login = () => {
     onSuccess: (data) => {
       console.log("Login successful:", data);
       setLoginAttempts(0);
+      setIsAuthenticated(true);
       navigate("/main");
+
     },
     onError: (error: Error) => {
       setLoginAttempts((prev) => prev + 1);
@@ -87,7 +91,7 @@ const Login = () => {
     <section className="h-screen">
       <div className="flex h-full items-center justify-center">
         <Hero />
-        <div className="flex h-full w-1/2 flex-col items-center justify-center">
+        <div className="flex h-full w-3/4 lg:w-1/2 flex-col items-center justify-center">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-1/2">
               <FormField
