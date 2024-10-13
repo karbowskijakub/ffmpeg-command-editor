@@ -54,14 +54,16 @@ const PostRowSavedCommand = ({ command, refetch }) => {
   };
 
   return (
-    <div key={command.id} className="bg-secondary w-full h-24 lg:h-10 flex justify-between items-center mb-2 ">
-      <ScrollArea className="h-16 lg:h-8">
-      <p className="ml-4 p-2 ">
+    <div key={command.id} className="bg-secondary w-full h-16 lg:h-10 flex justify-between items-center mb-2 rounded">
+      <ScrollArea className="h-16 lg:h-6">
+        <div className="flex justify-center items-center">
+      <p className="ml-4  ">
         <span className="font-bold mr-3">{command.postName}:</span>
         <span>{command.postContent}</span>
       </p>
+      </div>
       </ScrollArea>
-      <div className="p-2 min-w-24">
+      <div className=" min-w-24 flex justify-center items-center">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <button onClick={() => setDialogOpen(true)}> 

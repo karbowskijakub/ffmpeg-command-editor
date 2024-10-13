@@ -215,7 +215,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               />
               <div className="w-full flex justify-center items-center">
                 <Button type="button" className="mt-5" onClick={setFormDefault}>
-                  Reset all
+                Delete everything except format and filepath
                 </Button>
               </div>
             </div>

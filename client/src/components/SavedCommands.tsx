@@ -7,7 +7,12 @@ import { FileDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 const SavedCommands = () => {
   const navigate = useNavigate();
 
@@ -59,9 +64,17 @@ const SavedCommands = () => {
           Hello, Jakub
         </h1>
         <div className="flex justify-center items-center flex-col">
-          <button onClick={handleDownloadClick}>
+        <TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>    <button onClick={handleDownloadClick}>
             <FileDown className="mb-4 text-primary-foreground" />
-          </button>
+          </button></TooltipTrigger>
+    <TooltipContent>
+<p>Download all commands as commands.txt</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+         
           <Button variant="secondary" onClick={handleLoginClick}>
             Logout
           </Button>
