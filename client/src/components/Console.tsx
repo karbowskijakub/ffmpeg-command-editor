@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ConsoleProps } from "@/interfaces/Console";
+import { Button } from "./ui/button";
 
 const formSchema = z.object({
   fromCut: z.number({
@@ -154,11 +155,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
   }, [watchAllFields, setWatchedFields]);
 
   return (
-    <div className="flex w-full h-3/5 justify-center">
-      <div className="mt-10 mx-10 w-5/6 max-h-3/5 ">
+    <div className="flex w-full h-3/5 justify-center ">
+      <div className="mt-10 mx-10 w-full h-full lg:w-5/6 lg:max-h-3/5 ">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-5 flex">
-            <div className="bg-secondary text-secondary-foreground min-h-[600px] w-1/4 p-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:p-5 flex flex-col lg:flex-row">
+            <div className="bg-secondary text-secondary-foreground lg:min-h-[600px] w-full lg:w-1/4 p-4">
               <FormField
                 control={form.control}
                 name="FilePathInput"
@@ -212,9 +213,14 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                   </FormItem>
                 )}
               />
+              <div className="w-full flex justify-center items-center">
+                <Button type="button" className="mt-5" onClick={setFormDefault}>
+                Delete everything except format and filepath
+                </Button>
+              </div>
             </div>
 
-            <div className="text-secondary-foreground max-h-[600px] w-2/4 ">
+            <div className="text-secondary-foreground max-h-full lg:max-h-[600px] w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isTranscodingConversion"
@@ -249,7 +255,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Audio Codec</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const stringValue = value;
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
                             field.onChange(stringValue);
                             setLastChoosedCustomAudioCodec(stringValue);
                           }}
@@ -334,7 +343,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Video Codec</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const stringValue = value;
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
                             field.onChange(stringValue);
                             setLastChoosedCustomVideoCodec(stringValue);
                           }}
@@ -418,7 +430,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Bitrate Audio</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const numericValue = Number(value);
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
+                            const numericValue = Number(stringValue);
                             field.onChange(numericValue);
                             setLastChoosedCustomBitRateAudio(numericValue);
                           }}
@@ -431,6 +447,9 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
+                            <SelectItem value="default">
+                              Default value
+                            </SelectItem>
                             <SelectItem value="128">128 kbps</SelectItem>
                             <SelectItem value="192">192 kbps</SelectItem>
                             <SelectItem value="256">256 kbps</SelectItem>
@@ -507,7 +526,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                         <FormLabel>Choose Bitrate Video</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            const numericValue = Number(value);
+                            let stringValue = value;
+                            if (stringValue === "default") {
+                              stringValue = "";
+                            }
+                            const numericValue = Number(stringValue);
                             field.onChange(numericValue);
                             setLastChoosedCustomBitRateVideo(numericValue);
                           }}
@@ -520,6 +543,9 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
+                            <SelectItem value="default">
+                              Default value
+                            </SelectItem>
                             <SelectItem value="128">128 kbps</SelectItem>
                             <SelectItem value="192">192 kbps</SelectItem>
                             <SelectItem value="256">256 kbps</SelectItem>
@@ -742,12 +768,12 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               )}
             </div>
 
-            <div className="text-secondary-foreground h-full w-2/4 ">
+            <div className="text-secondary-foreground h-full w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isCutAudioAndVideo"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4  mx-2">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0  p-4  lg:mx-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
