@@ -46,8 +46,8 @@ const SavedCommands = () => {
 
   return (
     <div className="w-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-[85%] h-[350px]   lg:h-full bg-customGrey rounded  lg:mt-10">
-        <ScrollArea className="h-[350px]">
+      <div className="w-full lg:w-[85%] h-[120px] xxl:min-h-[350px]    lg:h-full bg-customGrey rounded  lg:mt-10">
+        <ScrollArea className="h-[120px] xxl:h-[350px] ">
           <div className="p-5">
         {data.map((command: CommandPost) => (
           <PostRowSavedCommand
@@ -59,7 +59,7 @@ const SavedCommands = () => {
         </div>
             </ScrollArea>
       </div>
-      <div className="w-full lg:w-[15%] lg:min-h-[350px]   h-full bg-customGrey rounded p-5 mt-10 lg:ml-3 flex flex-col justify-between items-center">
+      <div className="w-full lg:w-[15%] lg:min-h-[120px] xxl:min-h-[350px]   h-full bg-customGrey rounded p-4 mt-10 lg:ml-3 flex flex-row xxl:flex-col  justify-between items-center">
         <h1 className="font-bold text-primary-foreground text-xl text-center">
           Hello, Jakub
         </h1>

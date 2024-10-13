@@ -93,7 +93,7 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
 
   return (
     <>
-      <div className="w-full h-full lg:h-24 bg-primary rounded p-5 flex justify-between items-center flex-col lg:flex-row">
+      <div className="w-full h-full lg:h-16 bg-primary rounded p-5 flex justify-between items-center flex-col lg:flex-row">
         <p className="text-primary-foreground font-bold text-xl">
           {ffmpegCommand}
         </p>

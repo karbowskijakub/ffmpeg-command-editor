@@ -155,14 +155,14 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
   }, [watchAllFields, setWatchedFields]);
 
   return (
-    <div className="flex w-full h-3/5 justify-center ">
+    <div className="flex w-full h-3/5 justify-center mb-10 ">
       <div className="mt-10 mx-10 w-full h-full lg:w-5/6 lg:max-h-3/5 ">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="lg:p-5 flex flex-col lg:flex-row"
+            className="lg:p-5  flex flex-col lg:flex-row h-full "
           >
-            <div className="bg-secondary text-secondary-foreground lg:min-h-[600px] w-full lg:w-1/4 p-4">
+            <div className="bg-secondary text-secondary-foreground h-full w-full lg:w-1/4 p-4">
               <FormField
                 control={form.control}
                 name="FilePathInput"
@@ -217,13 +217,13 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                 )}
               />
               <div className="w-full flex justify-center items-center">
-                <Button type="button" className="mt-5" onClick={setFormDefault}>
-                  Delete everything except format and filepath
+                <Button type="button" className="mt-5 mb-5" onClick={setFormDefault}>
+                  Delete except input, output
                 </Button>
               </div>
             </div>
 
-            <div className="text-secondary-foreground max-h-full lg:max-h-[600px] w-full lg:w-2/4 ">
+            <div className="text-secondary-foreground max-h-full lg:max-h-[300px] xxl:max-h-[600px] w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isTranscodingConversion"
