@@ -230,7 +230,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return TypedResults.Unauthorized();
             }
 
-            return Results.Redirect("http://localhost:3000/confirmationEmail");
+            return Results.Redirect("http://localhost:3000/confirmation-email");
         })
         .Add(endpointBuilder =>
         {
