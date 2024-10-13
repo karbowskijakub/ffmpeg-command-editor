@@ -158,7 +158,10 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
     <div className="flex w-full h-3/5 justify-center ">
       <div className="mt-10 mx-10 w-full h-full lg:w-5/6 lg:max-h-3/5 ">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:p-5 flex flex-col lg:flex-row">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="lg:p-5 flex flex-col lg:flex-row"
+          >
             <div className="bg-secondary text-secondary-foreground lg:min-h-[600px] w-full lg:w-1/4 p-4">
               <FormField
                 control={form.control}
@@ -215,7 +218,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               />
               <div className="w-full flex justify-center items-center">
                 <Button type="button" className="mt-5" onClick={setFormDefault}>
-                Delete everything except format and filepath
+                  Delete everything except format and filepath
                 </Button>
               </div>
             </div>
@@ -635,14 +638,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="128">128 kbps</SelectItem>
-                            <SelectItem value="192">192 kbps</SelectItem>
-                            <SelectItem value="256">256 kbps</SelectItem>
-                            <SelectItem value="320">320 kbps</SelectItem>
-                            <SelectItem value="1000">1 Mbps</SelectItem>
-                            <SelectItem value="2500">2.5 Mbps</SelectItem>
-                            <SelectItem value="5000">5 Mbps</SelectItem>
-                            <SelectItem value="10000">10 Mbps</SelectItem>
+                            <SelectItem value="24">24 fps</SelectItem>
+                            <SelectItem value="30">30 fps</SelectItem>
+                            <SelectItem value="60">60 fps</SelectItem>
+                            <SelectItem value="120">120 fps</SelectItem>
+                            <SelectItem value="240">240 fps</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

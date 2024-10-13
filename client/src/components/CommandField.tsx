@@ -77,7 +77,11 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(ffmpegCommand)
+    const formattedCommand = ffmpegCommand
+      .replace(/\s+/g, ' ') 
+      .trim(); 
+  
+    navigator.clipboard.writeText(formattedCommand)
       .then(() => {
         toast.success("Command copied to clipboard!");
       })
