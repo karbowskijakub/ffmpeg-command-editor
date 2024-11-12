@@ -1,4 +1,5 @@
-import { CircleX, Pencil } from "lucide-react"; 
+import { CircleX, Pencil, SquareStack } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -10,30 +11,51 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { updateCommand, deleteCommand } from "@/api/api"; 
+import { updateCommand, deleteCommand } from "@/api/api";
 import { toast } from "react-toastify";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const PostRowSavedCommand = ({ command, refetch }) => {
-  const [commandName, setCommandName] = useState(command.postName); 
-  const [commandContent, setCommandContent] = useState(command.postContent); 
+  const [commandName, setCommandName] = useState(command.postName);
+  const [commandContent, setCommandContent] = useState(command.postContent);
+  const [commandContentCopy, setCommandContentCopy] = useState(
+    command.postContent
+  );
+  const [copyCount, setCopyCount] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogOpenDelete, setDialogOpenDelete] = useState(false);
+  const [dialogOpenCopy, setDialogOpenCopy] = useState(false);
+
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(commandContentCopy);
+      toast.success("Successfully copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy text.");
+      console.error("Clipboard copy error:", error);
+    }
+  };
 
   const handleEditCommand = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
-      await updateCommand({ 
-        id: command.id, 
-        userId: command.userId, 
-        postName: commandName,  
-        postContent: commandContent 
+      await updateCommand({
+        id: command.id,
+        userId: command.userId,
+        postName: commandName,
+        postContent: commandContent,
       });
       toast.success("Command updated successfully!");
       setDialogOpen(false);
-      refetch(); 
+      refetch();
     } catch (error) {
       toast.error("Failed to update command.");
       console.error("Error updating command:", error);
@@ -41,7 +63,7 @@ const PostRowSavedCommand = ({ command, refetch }) => {
   };
 
   const handleDeleteCommand = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
       await deleteCommand(command.id);
       toast.success("Command deleted successfully!");
@@ -53,22 +75,45 @@ const PostRowSavedCommand = ({ command, refetch }) => {
     }
   };
 
+  const handleCopyCountChange = (e) => {
+    let count = Number(e.target.value);
+    if (isNaN(count) || count <= 0) {
+      count = 1;
+    } else if (count > 1000) {
+      count = 1000;
+    }
+    setCopyCount(count);
+    setCommandContentCopy(Array(count).fill(command.postContent).join("\n"));
+  };
   return (
-    <div key={command.id} className="bg-secondary w-full h-16 lg:h-10 flex justify-between items-center mb-2 rounded">
+    <div
+      key={command.id}
+      className="bg-secondary w-full h-16 lg:h-10 flex justify-between items-center mb-2 rounded"
+    >
       <ScrollArea className="h-16 lg:h-6">
         <div className="flex justify-center items-center">
-      <p className="ml-4  ">
-        <span className="font-bold mr-3">{command.postName}:</span>
-        <span>{command.postContent}</span>
-      </p>
-      </div>
+          <p className="ml-4">
+            <span className="font-bold mr-3">{command.postName}:</span>
+            <span>{command.postContent}</span>
+          </p>
+        </div>
       </ScrollArea>
-      <div className=" min-w-24 flex justify-center items-center">
+      <div className="min-w-24 flex justify-center items-center">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <button onClick={() => setDialogOpen(true)}> 
-              <Pencil className="mr-2 lg:mr-3" />
-            </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                {" "}
+                <button onClick={() => setDialogOpen(true)} className="flex items-center justify-center">
+                <Pencil className="lg:mr-3" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit the command or its name</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -77,7 +122,7 @@ const PostRowSavedCommand = ({ command, refetch }) => {
                 Edit name and content of your command
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleEditCommand}> 
+            <form onSubmit={handleEditCommand}>
               <div className="w-full">
                 <div className="flex flex-col">
                   <Label htmlFor="name" className="mb-4">
@@ -89,19 +134,94 @@ const PostRowSavedCommand = ({ command, refetch }) => {
                     value={commandName}
                     onChange={(e) => setCommandName(e.target.value)}
                   />
-                  <Label htmlFor="content" className="mb-2"> 
+                  <Label htmlFor="content" className="mb-2">
                     Command content
                   </Label>
                   <Input
-                    id="content" 
+                    id="content"
                     className="col-span-3 mb-4 w-full"
-                    value={commandContent} 
-                    onChange={(e) => setCommandContent(e.target.value)} 
+                    value={commandContent}
+                    onChange={(e) => setCommandContent(e.target.value)}
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save command</Button> 
+                <Button
+                  type="button"
+                  onClick={() => setDialogOpen(false)}
+                  className="mr-2"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Save command</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={dialogOpenCopy} onOpenChange={setDialogOpenCopy}>
+          <DialogTrigger asChild>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                {" "}
+                <button onClick={() => setDialogOpenCopy(true)} className="flex items-center justify-center">
+                <SquareStack className="lg:mr-3" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy the command up to 1000 times</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] h-[600px] flex flex-col">
+            <DialogHeader>
+              <DialogTitle>Copy Command</DialogTitle>
+              <DialogDescription>
+                You can copy the command up to 1000 times.
+              </DialogDescription>
+            </DialogHeader>
+            <form className="flex flex-col flex-grow">
+              <div className="w-full flex flex-col flex-grow">
+                <Label htmlFor="copyCount" className="mb-2">
+                  How many times do you want to copy your command?
+                </Label>
+                <Input
+                  id="copyCount"
+                  className="mb-5"
+                  type="number"
+                  min="1"
+                  max="1000"
+                  value={copyCount}
+                  onChange={handleCopyCountChange}
+                />
+                <Label htmlFor="content" className="mb-2">
+                  Commands content
+                </Label>
+                <Textarea
+                  id="content"
+                  className="flex-grow mb-4 w-full resize-none"
+                  value={commandContentCopy}
+                  onChange={(e) => setCommandContentCopy(e.target.value)}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  onClick={() => setDialogOpenCopy(false)}
+                  className="mr-2"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleCopyToClipboard}
+                  className="mr-2"
+                >
+                  Copy to Clipboard
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -109,9 +229,21 @@ const PostRowSavedCommand = ({ command, refetch }) => {
 
         <Dialog open={dialogOpenDelete} onOpenChange={setDialogOpenDelete}>
           <DialogTrigger asChild>
-            <button onClick={() => setDialogOpenDelete(true)}> 
-              <CircleX className="lg:mr-3" />
-            </button>
+
+            <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                {" "}
+                <button onClick={() => setDialogOpenDelete(true)} className="flex items-center justify-center">
+                <CircleX className="lg:mr-3" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Delete command</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -120,11 +252,20 @@ const PostRowSavedCommand = ({ command, refetch }) => {
                 Are you sure you want to remove the command?
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleDeleteCommand}> 
+            <form onSubmit={handleDeleteCommand}>
               <div className="w-full">
                 <div className="flex justify-center">
-                  <Button type="button" onClick={() => setDialogOpenDelete(false)} className="mr-2">Cancel</Button> 
-                  <Button type="submit" variant="destructive">Delete row</Button> 
+                  <Button
+                    type="button"
+                    onClick={() => setDialogOpenDelete(false)}
+                    className="mr-2"
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="destructive">
+                    Delete row
+                  </Button>
                 </div>
               </div>
             </form>

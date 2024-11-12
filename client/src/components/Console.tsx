@@ -367,6 +367,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectItem>
                             <SelectItem value="libx264">H.264</SelectItem>
                             <SelectItem value="libx265">H.265</SelectItem>
+                            <SelectItem value="libx266">H.266</SelectItem>
                             <SelectItem value="libvpx">VP8</SelectItem>
                             <SelectItem value="libvpx-vp9">VP9</SelectItem>
                             <SelectItem value="libaom-av1">AV1</SelectItem>

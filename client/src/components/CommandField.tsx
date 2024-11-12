@@ -53,20 +53,26 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   ${toCut ? `-to ${toCut} -c copy` : ""} 
   ${FilePathOutput}`;
 
+  function sanitizeInput(input) {
+    return input.replace(/\s+/g, ' ').trim(); 
+  }
+  
+
   const [commandName, setCommandName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
+  
     if (!commandName.trim()) {
       toast.error("Command name cannot be empty."); 
       return; 
     }
-
+  
+    const sanitizedFfmpegCommand = sanitizeInput(ffmpegCommand);
+  
     try {
-      await postCommand({ postName: commandName, postContent: ffmpegCommand });
+      await postCommand({ postName: commandName, postContent: sanitizedFfmpegCommand });
       toast.success("Command saved successfully!");
       setDialogOpen(false);
       refetch();
