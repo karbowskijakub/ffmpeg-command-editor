@@ -155,11 +155,14 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
   }, [watchAllFields, setWatchedFields]);
 
   return (
-    <div className="flex w-full h-3/5 justify-center ">
+    <div className="flex w-full h-3/5 justify-center mb-10 ">
       <div className="mt-10 mx-10 w-full h-full lg:w-5/6 lg:max-h-3/5 ">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:p-5 flex flex-col lg:flex-row">
-            <div className="bg-secondary text-secondary-foreground lg:min-h-[600px] w-full lg:w-1/4 p-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="lg:p-5  flex flex-col lg:flex-row h-full "
+          >
+            <div className="bg-secondary text-secondary-foreground h-full w-full lg:w-1/4 p-4">
               <FormField
                 control={form.control}
                 name="FilePathInput"
@@ -214,13 +217,13 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                 )}
               />
               <div className="w-full flex justify-center items-center">
-                <Button type="button" className="mt-5" onClick={setFormDefault}>
-                Delete everything except format and filepath
+                <Button type="button" className="mt-5 mb-5" onClick={setFormDefault}>
+                  Delete except input, output
                 </Button>
               </div>
             </div>
 
-            <div className="text-secondary-foreground max-h-full lg:max-h-[600px] w-full lg:w-2/4 ">
+            <div className="text-secondary-foreground max-h-full lg:max-h-[450px] xxl:max-h-[600px] w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isTranscodingConversion"
@@ -364,6 +367,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectItem>
                             <SelectItem value="libx264">H.264</SelectItem>
                             <SelectItem value="libx265">H.265</SelectItem>
+                            <SelectItem value="libx266">H.266</SelectItem>
                             <SelectItem value="libvpx">VP8</SelectItem>
                             <SelectItem value="libvpx-vp9">VP9</SelectItem>
                             <SelectItem value="libaom-av1">AV1</SelectItem>
@@ -635,14 +639,11 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="128">128 kbps</SelectItem>
-                            <SelectItem value="192">192 kbps</SelectItem>
-                            <SelectItem value="256">256 kbps</SelectItem>
-                            <SelectItem value="320">320 kbps</SelectItem>
-                            <SelectItem value="1000">1 Mbps</SelectItem>
-                            <SelectItem value="2500">2.5 Mbps</SelectItem>
-                            <SelectItem value="5000">5 Mbps</SelectItem>
-                            <SelectItem value="10000">10 Mbps</SelectItem>
+                            <SelectItem value="24">24 fps</SelectItem>
+                            <SelectItem value="30">30 fps</SelectItem>
+                            <SelectItem value="60">60 fps</SelectItem>
+                            <SelectItem value="120">120 fps</SelectItem>
+                            <SelectItem value="240">240 fps</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

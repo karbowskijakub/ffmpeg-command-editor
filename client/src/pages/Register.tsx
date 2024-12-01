@@ -21,6 +21,15 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { privacyPolicy } from "../data/privacy-policy";
 const passwordValidation = z
   .string()
   .min(6, { message: "Password must be at least 6 characters long." })
@@ -68,6 +77,7 @@ const formSchema = z
   });
 
 const Register = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -115,7 +125,7 @@ const Register = () => {
     }
   };
   const navigate = useNavigate();
-  
+
   return (
     <section className="h-screen">
       <div className="flex h-full items-center justify-center">
@@ -239,7 +249,42 @@ const Register = () => {
                               htmlFor="terms"
                               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
-                              By registering, you confirm the privacy policy.
+                              By registering, you confirm the{" "}
+                              <Dialog
+                                open={dialogOpen}
+                                onOpenChange={setDialogOpen}
+                              >
+                                <DialogTrigger asChild>
+                                  <strong className="cursor-pointer">
+                                    privacy policy.
+                                  </strong>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Privacy Policy</DialogTitle>
+                                    <DialogDescription>
+                                      Read privacy policy before you create an
+                                      account.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div
+                                    className="text-sm text-gray-600 mb-4"
+                                    dangerouslySetInnerHTML={{
+                                      __html: privacyPolicy,
+                                    }}
+                                  ></div>
+                                  <div className="w-full">
+                                    <div className="flex justify-center">
+                                      <Button
+                                        type="button"
+                                        onClick={() => setDialogOpen(false)}
+                                      >
+                                        Close policy
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
                             </label>
                             <span className="text-center text-sm font-medium">
                               Already have an account?{" "}

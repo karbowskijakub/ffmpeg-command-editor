@@ -1,10 +1,6 @@
 ﻿using ffmpeg_conversion_helper.Domain.Models;
 using ffmpeg_conversion_helper.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using ffmpeg_commander.Application.DTO;

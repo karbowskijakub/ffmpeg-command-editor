@@ -53,20 +53,26 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   ${toCut ? `-to ${toCut} -c copy` : ""} 
   ${FilePathOutput}`;
 
+  function sanitizeInput(input) {
+    return input.replace(/\s+/g, ' ').trim(); 
+  }
+  
+
   const [commandName, setCommandName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
+  
     if (!commandName.trim()) {
       toast.error("Command name cannot be empty."); 
       return; 
     }
-
+  
+    const sanitizedFfmpegCommand = sanitizeInput(ffmpegCommand);
+  
     try {
-      await postCommand({ postName: commandName, postContent: ffmpegCommand });
+      await postCommand({ postName: commandName, postContent: sanitizedFfmpegCommand });
       toast.success("Command saved successfully!");
       setDialogOpen(false);
       refetch();
@@ -77,7 +83,11 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(ffmpegCommand)
+    const formattedCommand = ffmpegCommand
+      .replace(/\s+/g, ' ') 
+      .trim(); 
+  
+    navigator.clipboard.writeText(formattedCommand)
       .then(() => {
         toast.success("Command copied to clipboard!");
       })
@@ -89,7 +99,7 @@ const CommandField = ({ watchedFields }: CommandFieldProps) => {
 
   return (
     <>
-      <div className="w-full h-full lg:h-24 bg-primary rounded p-5 flex justify-between items-center flex-col lg:flex-row">
+      <div className="w-full h-full lg:h-16 bg-primary rounded p-5 flex justify-between items-center flex-col lg:flex-row">
         <p className="text-primary-foreground font-bold text-xl">
           {ffmpegCommand}
         </p>
