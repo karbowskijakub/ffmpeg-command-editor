@@ -175,7 +175,7 @@ const PostRowSavedCommand = ({ command, refetch }) => {
             </Tooltip>
           </TooltipProvider>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] h-[600px] flex flex-col">
+          <DialogContent className="sm:max-w-[425px] md:h-[600px] flex flex-col">
             <DialogHeader>
               <DialogTitle>Copy Command</DialogTitle>
               <DialogDescription>

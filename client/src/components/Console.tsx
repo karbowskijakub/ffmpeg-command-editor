@@ -223,7 +223,7 @@ const Console = ({ setWatchedFields }: ConsoleProps) => {
               </div>
             </div>
 
-            <div className="text-secondary-foreground max-h-full lg:max-h-[300px] xxl:max-h-[600px] w-full lg:w-2/4 ">
+            <div className="text-secondary-foreground max-h-full lg:max-h-[450px] xxl:max-h-[600px] w-full lg:w-2/4 ">
               <FormField
                 control={form.control}
                 name="isTranscodingConversion"
