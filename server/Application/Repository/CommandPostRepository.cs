@@ -59,6 +59,11 @@ namespace ffmpeg_conversion_helper.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<User?> GetCurrentUser(string userId)
+        {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
         public async Task<bool> DeleteAsync(Guid id, string userId)
         {
 

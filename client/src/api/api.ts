@@ -127,6 +127,20 @@ export const checkEmail = async (email: string) => {
     return response.data; 
   };
 
+  export const getUserData = async () => {
+    const response = await axios.get(`${url}/CommandPost/current-posts-user`, {
+      params: {
+        useCookies: true,
+      },
+      withCredentials: true,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; 
+  };
+
 
 
   export const postRegister = async (data: {

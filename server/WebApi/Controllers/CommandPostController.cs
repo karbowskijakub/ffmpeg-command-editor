@@ -76,6 +76,21 @@ namespace ffmpeg_conversion_helper.WebApi.Controllers
             return Ok(commandPosts);
         }
 
+        [HttpGet("current-posts-user")]
+        public async Task<ActionResult<IEnumerable<User>>> GetCurrentUserPosts()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User not found or unauthorized.");
+            }
+
+            var UserData = await _repository.GetCurrentUser(userId);
+
+            return Ok(UserData);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CommandPost>> GetCommandPost(Guid id)
         {

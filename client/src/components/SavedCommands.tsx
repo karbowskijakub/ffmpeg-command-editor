@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { postLogout, getAllCommands, downloadPosts } from "@/api/api";
+import { postLogout, getAllCommands, downloadPosts, getUserData } from "@/api/api";
 import { useNavigate } from "react-router-dom";
 import PostRowSavedCommand from "./PostRowSavedCommand";
 import { CommandPost } from "@/interfaces/CommandPost";
@@ -13,18 +13,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 const SavedCommands = () => {
   const navigate = useNavigate();
 
-  const { data, error, isLoading, refetch } = useQuery({
+  const { data: commands, error, isLoading, refetch } = useQuery({
     queryKey: ["commands"],
     queryFn: getAllCommands,
+  });
+
+  const { data: userData, isLoading: isUserLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUserData,
   });
 
   const handleLoginClick = () => {
     postLogout();
     navigate("/login");
   };
+
   const handleDownloadClick = async () => {
     try {
       await downloadPosts();
@@ -35,7 +42,7 @@ const SavedCommands = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isUserLoading) {
     return <div>Loading...</div>;
   }
 
@@ -45,10 +52,10 @@ const SavedCommands = () => {
 
   return (
     <div className="w-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-[85%] h-[420px] lg:h-[130px] xxl:min-h-[350px]  bg-customGrey rounded  lg:mt-10">
-        <ScrollArea className="h-[420px] lg:h-[140px] xxl:h-[350px] ">
+      <div className="w-full lg:w-[85%] h-[420px] lg:h-[130px] xxl:min-h-[350px] bg-customGrey rounded lg:mt-10">
+        <ScrollArea className="h-[420px] lg:h-[140px] xxl:h-[350px]">
           <div className="p-5">
-            {data.map((command: CommandPost) => (
+            {commands.map((command: CommandPost) => (
               <PostRowSavedCommand
                 key={command.id}
                 command={command}
@@ -58,9 +65,9 @@ const SavedCommands = () => {
           </div>
         </ScrollArea>
       </div>
-      <div className="w-full lg:w-[15%] lg:min-h-[130px] xxl:min-h-[350px]   h-full bg-customGrey rounded p-4 mt-10 lg:ml-3 flex flex-row xxl:flex-col  justify-between items-center">
+      <div className="w-full lg:w-[15%] lg:min-h-[130px] xxl:min-h-[350px] h-full bg-customGrey rounded p-4 mt-10 lg:ml-3 flex flex-row xxl:flex-col justify-between items-center">
         <h1 className="font-bold text-primary-foreground text-xl text-center">
-          Hello, Jakub
+          Hello, {userData.firstName}
         </h1>
         <div className="flex justify-center items-center flex-col">
           <TooltipProvider>
